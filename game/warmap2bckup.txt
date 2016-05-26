@@ -1,0 +1,341 @@
+<?php
+require '../includes/connect.php';
+
+require 'includes/playerdata.php';
+?>
+<html>
+<head>
+<title>War Room</title>
+<link rel="stylesheet" type="text/css" href="mapstyles.css" />
+<script src="includes/jquery.js"></script>
+</head>
+<body>
+<?php
+	$getplayertroops = mysql_query("SELECT troops FROM $factiondb WHERE factionuser='$username' AND factionname = '$chosencolony'");
+	$playertroops = mysql_result($getplayertroops, 0);
+			
+		switch($allegiance)
+		{
+			case 'authority':
+			$bombtype='Conversion Bombs';
+			$shieldtype='Theatre Shields';
+			break;
+			case 'solidarity':
+			$bombtype='Nuclear Warheads';
+			$shieldtype='Bunkers';
+			break;
+			case 'mercantile':
+			$bombtype='Kinetic Impactors';
+			$shieldtype='Interceptors';
+			break;
+		}
+?>
+<script type="text/javascript" src="includes/jquery.js"></script>      
+<script type="text/javascript">
+$(document).ready(function() {
+
+	$(".tab_content").hide();
+	$(".tab_content:first").show(); 
+
+	$("ul.tabs li").click(function() {
+		$("ul.tabs li").removeClass("active");
+		$(this).addClass("active");
+		$(".tab_content").hide();
+		var activeTab = $(this).attr("rel"); 
+		$("#"+activeTab).fadeIn(); 
+	});
+});
+
+$(document).ready(function() {
+   $("#bgPopup").data("state",0);
+   $("#fortitudepop").click(function(){
+		checkBattlezone('fort');
+		centerPopup();
+		loadPopup();
+   });
+   $("#munduspop").click(function(){
+		checkBattlezone('mundus');
+		centerPopup();
+		loadPopup();   
+   });
+   $("#centauripop").click(function(){
+		checkBattlezone('cent');
+		centerPopup();
+		loadPopup();   
+   });
+   $("#popupClose").click(function(){
+	   	disablePopup();
+   });
+   $(document).keypress(function(e){
+		if(e.keyCode==27) {
+			disablePopup();	
+		}
+	});
+});
+
+//Recenter the popup on resize - Thanks @Dan Harvey [http://www.danharvey.com.au/]
+$(window).resize(function() {
+centerPopup();
+});
+
+
+
+</script>
+<center><img src="warmapfiles/starfield3.jpg" usemap="#warmap"></center>
+<map name="warmap">
+	<area shape="circle" coords="492,129,60" href="#" id="fortitudepop" alt="Fortitude Sector">
+	<area shape="circle" coords="165,510,60" href="#" id="munduspop" alt="Nova Mundus Sector">
+	<area shape="circle" coords="822,631,60" href="#" id="centauripop" alt="Alpha Centauri Sector">
+</map>
+
+<div id="Popup"> 
+<div class="loading">
+	<img src="warmapfiles/ajax-loader.gif">
+</div>
+<a href="#" id="popupClose">x</a>
+<ul class="tabs"> 
+        <li class="active" rel="tab1">Deployments</li>
+        <li rel="tab2"> Special Operations</li>
+</ul>
+<div class="tab_container"> 
+
+     <div id="tab1" class="tab_content"> 
+ 
+         <span id="zoneinfo">  
+		<h1 id="battlezone">Fortitude</h1>   
+		<b>Owned By: </b> Solidarity
+		</span>
+
+     </div><!-- #tab1 -->
+     <div id="tab2" class="tab_content"> 
+
+       <p> <br />
+	   <span id="specops_zone">
+      	<strong>
+      	Special Operations Goes Here.
+      	</strong>
+		</span>
+       </p>
+
+     </div><!-- #tab2 -->  
+ </div> <!-- .tab_container --> 
+</div>   
+<div id="bgPopup"></div>
+<br><br><span id="tester" color="#FFFFFF">Can this be seen</span>
+<script type="text/javascript" src="includes/jquery.js"></script>      
+<script type="text/javascript">
+function checkBattlezone(var1)
+{
+	if(var1 == 'fort')
+	{
+		$.get("warmapfiles/zoneinfo.php?zonetarget=3", function(data){
+		$("#zoneinfo").html(data);} );
+		window.setTimeout( prepForm, 100 );
+		$.get("warmapfiles/missioninfo.php?zonetarget=3", function(data){
+		$("#specops_zone").html(data);} );
+		window.setTimeout( prepOps, 100);
+	}
+	if(var1 == 'mundus')
+	{
+		$.get("warmapfiles/zoneinfo.php?zonetarget=2", function(data){
+		$("#zoneinfo").html(data);} );
+		window.setTimeout( prepForm, 100 );
+		$.get("warmapfiles/missioninfo.php?zonetarget=3", function(data){
+		$("#specops_zone").html(data);} );
+		window.setTimeout( prepOps, 100);
+	}
+	if(var1 == 'cent')
+	{
+		$.get("warmapfiles/zoneinfo.php?zonetarget=1", function(data){
+		$("#zoneinfo").html(data);} );
+		window.setTimeout( prepForm, 100 );
+		$.get("warmapfiles/missioninfo.php?zonetarget=3", function(data){
+		$("#specops_zone").html(data);} );
+		window.setTimeout( prepOps, 100);
+	}
+}
+
+function loadPopup(){
+	//loads popup only if it is disabled
+	if($("#bgPopup").data("state")==0){
+		$("#bgPopup").css({
+			"opacity": "0.7"
+		});
+		$("#bgPopup").fadeIn("medium");
+		$("#Popup").fadeIn("medium");
+		$("#bgPopup").data("state",1);
+	}
+}
+
+function disablePopup(){
+	if ($("#bgPopup").data("state")==1){
+		$("#bgPopup").fadeOut("medium");
+		$("#Popup").fadeOut("medium");
+		$("#bgPopup").data("state",0);
+	}
+}
+
+function centerPopup(){
+	var winw = $(window).width();
+	var winh = $(window).height();
+	var popw = $('#Popup').width();
+	var poph = $('#Popup').height();
+	$("#Popup").css({
+        "position" : "fixed",
+        "top" : "50px",
+        "left" : winw/2-popw/2
+	});
+	//IE6
+	$("#bgPopup").css({
+		"height": winh	
+	});
+}
+
+function prepForm(){
+	$(".error").hide();
+	$("#deployButton").click(function(e)
+	{
+	e.preventDefault();
+	//validate and process form
+	$(".deploy_error").hide();
+	$('#deploymessage').html("");
+	var deployment = $("#deploy").val();
+	var allegiance = $("#allegiance").val();
+	var location = $("#location").val();
+	var maxtroops = <?php echo $playertroops; ?>;
+	var zoneid = $("#zoneid").val();
+		if(deployment > maxtroops)
+		{
+			$("#deploy_error").show();  
+			$("#deploy").focus();
+			return false;
+		}
+		var dataString = 'deploy='+ deployment + '&allegiance=' + allegiance + '&location=' + location;
+		$.ajax({
+			url: "battledeploy.php",
+			type: "POST",    
+			data: dataString,  
+			success: function() {    
+			$('#deploymessage').html("<strong>Troops Deployed.</strong>");
+			}  
+		});
+		$("#zoneinfo").hide();
+		$("#zoneinfo").load("warmapfiles/zoneinfo.php?zonetarget="+zoneid);
+		window.setTimeout(refreshZone, 150);
+		return false;
+	});
+	
+	//Withdrawals
+	$("#withdrawButton").click(function(event)
+	{
+	event.preventDefault();
+	//validate and process form
+	$(".withdraw_error").hide();
+	$('#deploymessage').html("");
+	var withdrawal = $("#troopwithdraw").val();
+	var allegiance = $("#withdrawallegiance").val();
+	var location = $("#withdrawlocation").val();
+	var maxwithdraw = $("#withdrawmax").val();
+	var zoneid = $("#zoneid").val();
+		if(withdrawal > maxwithdraw)
+		{
+			$("#withdraw_error").show();  
+			$("#troopwithdraw").focus();
+			return false;
+		}
+		var dataString = 'deploy='+ withdrawal + '&allegiance=' + allegiance + '&location=' + location;
+		$.ajax({
+			url: "battlewithdraw.php",
+			type: "POST",    
+			data: dataString,  
+			success: function() {    
+			$('#deploymessage').html("<strong>Troops Withdrawn.</strong>");
+			}  
+		});
+		$("#zoneinfo").hide();
+		$("#zoneinfo").load("warmapfiles/zoneinfo.php?zonetarget="+zoneid);
+		window.setTimeout(refreshZone, 150);
+		return false;
+	
+	});
+	
+	//Weapons
+	$("#weaponButton").click(function(event)
+	{
+	event.preventDefault();
+	//validate and process form
+	$(".weapon_error").hide();
+	$('#deploymessage').html("");
+	var weaponamount = parseInt($("#weapondeploynum").val());
+	var weapontype = $("#weapontype").val();
+	var allegiance = $("#weaponallegiance").val();
+	var location = $("#weapondeployid").val();
+	var maxbombs = parseInt($("#bombamount").val());
+	var maxshields = parseInt($("#shieldamount").val());
+	var zoneid = $("#weapondeployid").val();
+	var target = $('input:radio[name=targetzone]:checked').val();;
+	alert("Variables Done"+weaponamount+", "+weapontype+", "+location+", "+maxshields+", "+target);
+		if(weapontype == 'bombs')
+		{
+			if(weaponamount > maxbombs)
+			{
+				$("#weapon_error").show();  
+				$("#weapondeploy").focus();
+				return false;
+			}
+			else
+			{
+				var dataString = 'weapons='+ weaponamount + '&location=' + location + '&weapontype=' + weapontype + '&targetzone=' +target;
+			}
+		}
+		else if(weapontype=='shields')
+		{
+			if(weaponamount > maxshields)
+			{
+				$("#weapon_error").show();  
+				$("#weapondeploy").focus();
+				return false;
+			}
+			else
+			{
+				var dataString = 'weapons='+ weaponamount + '&location=' + location + '&weapontype=' + weapontype;
+			}
+		}
+		$.ajax({
+			url: "warmapfiles/weaponsdeploy.php",
+			type: "POST",    
+			data: dataString,  
+			success: function(data) {    
+			$('#deploymessage').html(data);
+			}  
+		});
+		$("#zoneinfo").hide();
+		$("#zoneinfo").load("warmapfiles/zoneinfo.php?zonetarget="+zoneid);
+		window.setTimeout(refreshZone, 150);
+		return false;
+	
+	});
+}
+
+function refreshZone()
+{
+	window.setTimeout(prepForm, 100);
+	$(".error").hide();
+	$("#zoneinfo").fadeIn(2000);
+}
+
+function showLoading()
+{
+	$(".loading").fadeIn(100);
+	window.setTimeout(prepForm, 200);
+	window.setTimeout(prepOps, 200);
+}
+
+function prepOps()
+{
+	$(".missioninfo").hide();
+}
+</script>
+</body>
+</html>
+

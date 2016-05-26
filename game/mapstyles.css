@@ -1,0 +1,204 @@
+* { padding: 0; margin: 0; }
+
+body {
+ font-family: Arial, Helvetica, sans-serif;
+ font-size: 13px;
+ background: #000000;
+}
+
+img{
+	border: 2px solid #ccc;
+}
+
+/*
+#popupClose - this is referring to the anchor tag inside the popup conatainer.
+We'll absolute position and style it here
+*/
+#popupClose{  
+	font-size:20px;  
+	line-height:20px;  
+	position:absolute;
+	right:6px;  
+	top:4px;  
+	font-weight:700; 
+	display:block;  
+}
+
+/*
+#bgPopup - this is referring to the element that will cover the whole page 
+behind the popup and above the rest of the page.
+NOTE: if you are using z-index on the same level in the DOM - 
+	#bgPopup z-index needs to have the second highest value (behind #Popup)
+*/
+#bgPopup{
+	display:none; 
+	position:fixed;  
+	_position:absolute; /* hack for internet explorer 6*/  
+	height:100%;  
+	width:100%;  
+	top:0;  
+	left:0;  
+	background:#000000;   
+	z-index:1;  
+}  
+
+/*
+#Popup - The popup container
+NOTE: if you are using z-index on the same level in the DOM - 
+	#Popup z-index needs to have the highest value.
+*/
+#Popup{  
+	display:none;  
+	position:fixed;  
+	_position:absolute; /* hack for internet explorer 6 */ 
+	background:#FFFFFF;  
+	border:2px solid #cecece;  
+	z-index:2;  
+	padding:12px;  
+	font-size:13px;
+	width: 750px;
+	height: 500px;
+	overflow: auto;
+} 
+
+#Popup a
+{
+	color: #000000;
+	text-decoration: none;
+}
+/*
+#myButton - The Button....  make it have Button-like properties
+*/
+#myButton{
+	display:block;
+	position:relative;
+	width:200px;
+	height:50px;
+	line-height:50px;
+	font-family:"Trebuchet MS";
+	font-size:14px
+	text-align:center;	
+}
+
+#wrapper { 
+ margin: 0 auto;
+ width: 922px;
+}
+
+#clear
+{
+	clear: both;
+}
+
+ul.tabs {
+		margin: 0;
+		padding: 0;
+		float: left;
+		list-style: none;
+		height: 32px;
+		border-bottom: 1px solid #999999;
+		border-left: 1px solid #999999;
+		width: 100%;
+	}
+	ul.tabs li {
+		float: left;
+		margin: 0;
+		cursor: pointer;
+		padding: 0px 21px ;
+		height: 31px;
+		line-height: 31px;
+		border: 1px solid #999999;
+		border-left: none;
+		font-weight: bold;
+		background: #EEEEEE;
+		overflow: hidden;
+		position: relative;
+	}
+	ul.tabs li:hover {
+		background: #CCCCCC;
+	}	
+	ul.tabs li.active{
+		background: #FFFFFF;
+		border-bottom: 1px solid #FFFFFF;
+	}
+	.tab_container {
+		border: 1px solid #999999;
+		border-top: none;
+		clear: both;
+		float: left; 
+		width: 100%;
+		background: #FFFFFF;
+	}
+	.tab_content {
+		display: none;
+	}
+	
+.loading{
+	margin-top:100px;
+}
+
+.navul{
+list-style-type:none;
+margin:0;
+padding:0;
+overflow:hidden;
+}
+.navul li
+{
+margin-left: auto;
+margin-right:auto;
+background-color:#000000;
+}
+.navul a:link,a:visited
+{
+display:block;
+width:170px;
+font-weight:bold;
+color:#FFFFFF;
+background-color:#484848;
+text-align:center;
+padding:4px;
+text-decoration:none;
+text-transform:uppercase;
+}
+.navul a:hover,a:active
+{
+background-color:#686868 ;
+}
+.navul ul
+{
+	display:none;
+}
+.navul li:hover ul
+{
+	display:block;
+}
+.navul ul
+{
+	float: none;
+	position: relative;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	left: 0;
+}
+.navul ul li
+{
+	float: none;
+	clear: none;
+	margin: 0;
+	padding: 0;
+	width: auto;
+	color: #999;
+}
+
+input.error { border: 1px solid red; }
+	label.error {
+	padding-left: 16px;
+	margin-left: .3em;
+	}
+	label.valid{
+		display: block;
+		width: 16px;
+		height: 16px;
+	}
